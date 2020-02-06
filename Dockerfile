@@ -1,5 +1,5 @@
 # Adapted from https://github.com/brandonstevens/mirth-connect-docker
-FROM openjdk:8u181-jdk-stretch
+FROM openjdk:8u242-jdk-stretch
 
 ARG ENV_MIRTH_CONNECT_VERSION
 ARG ENV_FILEBEAT_VERSION
@@ -34,8 +34,6 @@ WORKDIR /opt/mirth-connect
 
 EXPOSE 80 8443 6661 6671
 
-ADD ./mirth.properties /opt/mirth-connect/conf/mirth.properties
-ADD ./mirth-cli-config.properties /opt/mirth-connect/conf/mirth-cli-config.properties
 ADD ./configuration.properties /opt/mirth-connect/appdata/configuration.properties
 ADD ./mirth-script_config.txt /opt/mirth-script_config.txt
 ADD ./crontab.txt /opt/crontab.txt
@@ -43,16 +41,12 @@ ADD ./export-all-channels.sh /opt/export-all-channels.sh
 ADD ./mirth-script_export-channels.txt /opt/mirth-script_export-channels.txt
 ADD ./docker-entrypoint.sh /docker-entrypoint.sh
 
-###############################################################################
-#                                INSTALLATION FILEBEAT
-###############################################################################
-
+# Install Filebeat
 RUN wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${ENV_FILEBEAT_VERSION}-amd64.deb -O /tmp/filebeat.deb \
  && dpkg -i /tmp/filebeat.deb
 
 ADD filebeat.yml /etc/filebeat/filebeat.yml
 
-###############################################################################
 
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
