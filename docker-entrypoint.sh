@@ -8,8 +8,8 @@ until psql -h ${MIRTH_POSTGRES_DB_HOST} -U ${MIRTH_POSTGRES_USER} -d postgres -c
   sleep 1
 done
 
-# Ensure that database in empty and fresh
-if [ "${DROP_DB_ON_START}" = "true" ] ; then
+# Ensure that database is empty and fresh when working in development env
+if [ "${DROP_DB_ON_START}" = "true" ] && [ $RIT_ENV != acc ] && [ $RIT_ENV != prod ]; then
     echo "Dropping existing MirthConnect database"
     psql -h ${MIRTH_POSTGRES_DB_HOST} -U ${MIRTH_POSTGRES_USER} -d postgres <<- EOSQL
         DROP DATABASE IF EXISTS ${MIRTH_POSTGRES_DB};
