@@ -36,9 +36,9 @@ EXPOSE 80 8443 6661 6671
 
 ADD ./configuration.properties /opt/mirth-connect/appdata/configuration.properties
 ADD ./mirth-script_config.txt /opt/mirth-script_config.txt
-ADD ./crontab.txt /opt/crontab.txt
-ADD ./export-all-channels.sh /opt/export-all-channels.sh
-ADD ./mirth-script_export-channels.txt /opt/mirth-script_export-channels.txt
+ADD ./cron/crontab.txt /opt/crontab.txt
+ADD ./cron/export-all-channels.sh /opt/export-all-channels.sh
+ADD ./cron/mirth-script_export-channels.txt /opt/mirth-script_export-channels.txt
 ADD ./docker-entrypoint.sh /docker-entrypoint.sh
 
 # Install Filebeat
