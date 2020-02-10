@@ -28,10 +28,6 @@ sed -i "s|database.url.*|database.url = jdbc:postgresql://$MIRTH_POSTGRES_DB_HOS
 sed -i "s|database.username.*|database.username = $MIRTH_POSTGRES_USER|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|database.password.*|database.password = $PGPASSWORD|" /opt/mirth-connect/conf/mirth.properties
 
-## mirth-cli-config.properties
-sed -i "s|user=.*|user=$MIRTH_ADMIN_USER|" /opt/mirth-connect/conf/mirth-cli-config.properties
-sed -i "s|password=.*|password=$MIRTH_ADMIN_PASSWORD|" /opt/mirth-connect/conf/mirth-cli-config.properties
-
 ## configuration.properties
 sed -i "s/RIT_ENV/$RIT_ENV/" /opt/mirth-connect/appdata/configuration.properties
 
@@ -44,7 +40,14 @@ until nc -z localhost 80; do
   sleep 2
 done
 
-# Create users and import channels into MirthConnect using CLI
+# Change the default administrator password
+sed -i "s|ADMIN_PASS_PLACEHOLDER|$MIRTH_ADMIN_PASSWORD|" /opt/mirth-changepw.txt
+./mccommand -s /opt/mirth-changepw.txt
+
+# Template the updated credentials into mirth-cli-config.properties
+sed -i "s|password=.*|password=$MIRTH_ADMIN_PASSWORD|" /opt/mirth-connect/conf/mirth-cli-config.properties
+
+# Import channels into MirthConnect using CLI
 ./mccommand -s /opt/mirth-script_config.txt
 
 # Only run channel backup job in development env

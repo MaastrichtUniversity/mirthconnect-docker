@@ -1,0 +1,1 @@
+user changepw admin "ADMIN_PASS_PLACEHOLDER"

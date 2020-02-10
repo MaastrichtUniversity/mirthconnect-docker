@@ -35,6 +35,7 @@ WORKDIR /opt/mirth-connect
 EXPOSE 80 8443 6661 6671
 
 ADD ./configuration.properties /opt/mirth-connect/appdata/configuration.properties
+ADD ./mirth-changepw.txt /opt/mirth-changepw.txt
 ADD ./mirth-script_config.txt /opt/mirth-script_config.txt
 ADD ./cron/crontab.txt /opt/crontab.txt
 ADD ./cron/export-all-channels.sh /opt/export-all-channels.sh
