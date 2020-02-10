@@ -40,9 +40,12 @@ until nc -z localhost 80; do
   sleep 2
 done
 
-# Change the default administrator password
-sed -i "s|ADMIN_PASS_PLACEHOLDER|$MIRTH_ADMIN_PASSWORD|" /opt/mirth-changepw.txt
-./mccommand -s /opt/mirth-changepw.txt
+# Change the default administrator password if it is the first run on this database.
+SHORT_HASH=$(psql -qAt -h ${MIRTH_POSTGRES_DB_HOST} -U ${MIRTH_POSTGRES_USER} -d mirthdb -c 'SELECT password FROM person_password WHERE person_id = 1;' | cut -c1-6)
+if [[ $SHORT_HASH = 'YzKZIA' ]]; then
+    sed -i "s|ADMIN_PASS_PLACEHOLDER|$MIRTH_ADMIN_PASSWORD|" /opt/mirth-changepw.txt
+    ./mccommand -s /opt/mirth-changepw.txt
+fi
 
 # Template the updated credentials into mirth-cli-config.properties
 sed -i "s|password=.*|password=$MIRTH_ADMIN_PASSWORD|" /opt/mirth-connect/conf/mirth-cli-config.properties
