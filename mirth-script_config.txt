@@ -1,5 +1,3 @@
-user add dh.user "foobar" "DataHub" "User" "MUMC" "email@example.org"
-
 importcfg "/opt/channels/conf/mirth_server_settings.xml"
 codetemplate library import "/opt/channels/conf/lib_CustomFunctions.xml"
 
