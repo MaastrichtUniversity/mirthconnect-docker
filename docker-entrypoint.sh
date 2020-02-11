@@ -31,6 +31,10 @@ sed -i "s|database.password.*|database.password = $PGPASSWORD|" /opt/mirth-conne
 ## configuration.properties
 sed -i "s/RIT_ENV/$RIT_ENV/" /opt/mirth-connect/appdata/configuration.properties
 
+## server.id
+# Keep server id constant in order to load corresponding message history from existing database
+echo "server.id = $MIRTH_SERVER_ID" > /opt/mirth-connect/appdata/server.id
+
 # Start MirthConnect service
 ./mcservice start
 
@@ -40,18 +44,23 @@ until nc -z localhost 80; do
   sleep 2
 done
 
-# Change the default administrator password if it is the first run on this database.
+# Determine if this is the first run on this database and then:
+# - Import initial configuration into database
+# - Import initial channels
+# - Change the initial password to the one defined in env var
+# Note: to update channels on an existing database, you MUST use the Administrator GUI. Using the ./mccommand import statement will result in message history data loss!
 SHORT_HASH=$(psql -qAt -h ${MIRTH_POSTGRES_DB_HOST} -U ${MIRTH_POSTGRES_USER} -d mirthdb -c 'SELECT password FROM person_password WHERE person_id = 1;' | cut -c1-6)
 if [[ $SHORT_HASH = 'YzKZIA' ]]; then
+    # Import config and channels into MirthConnect using CLI
+    ./mccommand -s /opt/mirth-script_config.txt
+
+    # Change the initial admin password
     sed -i "s|ADMIN_PASS_PLACEHOLDER|$MIRTH_ADMIN_PASSWORD|" /opt/mirth-changepw.txt
     ./mccommand -s /opt/mirth-changepw.txt
 fi
 
-# Template the updated credentials into mirth-cli-config.properties
+# Template the user specified credentials into mirth-cli-config.properties
 sed -i "s|password=.*|password=$MIRTH_ADMIN_PASSWORD|" /opt/mirth-connect/conf/mirth-cli-config.properties
-
-# Import channels into MirthConnect using CLI
-./mccommand -s /opt/mirth-script_config.txt
 
 # Only run channel backup job in development env
 if [ $RIT_ENV != acc ] && [ $RIT_ENV != prod ]; then
