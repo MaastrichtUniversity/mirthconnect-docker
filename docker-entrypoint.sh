@@ -21,7 +21,6 @@ fi
 # Templating various config files
 ## mirth.properties
 sed -i "s|http.port.*|http.port = 80|" /opt/mirth-connect/conf/mirth.properties
-sed -i "s|keystore.path.*|keystore.path = $JAVA_HOME/jre/lib/security/cacerts|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|keystore.storepass.*|keystore.storepass = $MIRTH_KEYSTORE_STOREPASS|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|keystore.keypass.*|keystore.keypass = $MIRTH_KEYSTORE_KEYPASS|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|database =.*|database = postgres|" /opt/mirth-connect/conf/mirth.properties
@@ -62,6 +61,10 @@ fi
 
 # Template the user specified credentials into mirth-cli-config.properties
 sed -i "s|password=.*|password=$MIRTH_ADMIN_PASSWORD|" /opt/mirth-connect/conf/mirth-cli-config.properties
+
+# Add some relevant CA to MirthConnect's own keystore
+keytool -import -noprompt -keystore /opt/mirth-connect/appdata/keystore.jks -storetype jceks -storepass $MIRTH_KEYSTORE_STOREPASS -file /etc/ssl/certs/DigiCert_Assured_ID_Root_CA.pem -alias DigiCertAssuredIdRootCa
+keytool -import -noprompt -keystore /opt/mirth-connect/appdata/keystore.jks -storetype jceks -storepass $MIRTH_KEYSTORE_STOREPASS -file /etc/ssl/certs/DigiCert_Global_Root_CA.pem -alias DigiCertGlobalRootCa
 
 # Only run channel backup job in development env
 if [ $RIT_ENV != acc ] && [ $RIT_ENV != prod ]; then
