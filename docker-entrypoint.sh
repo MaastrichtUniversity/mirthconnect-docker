@@ -35,6 +35,10 @@ sed -i "s/RIT_ENV/$RIT_ENV/" /opt/mirth-connect/appdata/configuration.properties
 # Keep server id constant in order to load corresponding message history from existing database
 echo "server.id = $MIRTH_SERVER_ID" > /opt/mirth-connect/appdata/server.id
 
+# Add some relevant CA to the OpenJDK keystore
+wget https://www.terena.org/activities/tcs/repository-g3/TERENA_SSL_CA_3.pem -O /tmp/terena_ssl_ca_3.crt
+keytool -import -noprompt -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -file /tmp/terena_ssl_ca_3.crt -alias terenaSslCa3
+
 # Start MirthConnect service
 ./mcservice start
 
@@ -61,10 +65,6 @@ fi
 
 # Template the user specified credentials into mirth-cli-config.properties
 sed -i "s|password=.*|password=$MIRTH_ADMIN_PASSWORD|" /opt/mirth-connect/conf/mirth-cli-config.properties
-
-# Add some relevant CA to MirthConnect's own keystore
-keytool -import -noprompt -keystore /opt/mirth-connect/appdata/keystore.jks -storetype jceks -storepass $MIRTH_KEYSTORE_STOREPASS -file /etc/ssl/certs/DigiCert_Assured_ID_Root_CA.pem -alias DigiCertAssuredIdRootCa
-keytool -import -noprompt -keystore /opt/mirth-connect/appdata/keystore.jks -storetype jceks -storepass $MIRTH_KEYSTORE_STOREPASS -file /etc/ssl/certs/DigiCert_Global_Root_CA.pem -alias DigiCertGlobalRootCa
 
 # Only run channel backup job in development env
 if [ $RIT_ENV != acc ] && [ $RIT_ENV != prod ]; then
