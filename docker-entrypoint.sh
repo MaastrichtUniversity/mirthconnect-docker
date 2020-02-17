@@ -21,6 +21,7 @@ fi
 # Templating various config files
 ## mirth.properties
 sed -i "s|http.port.*|http.port = 80|" /opt/mirth-connect/conf/mirth.properties
+sed -i "s|keystore.path.*|keystore.path = $JAVA_HOME/jre/lib/security/cacerts|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|keystore.storepass.*|keystore.storepass = $MIRTH_KEYSTORE_STOREPASS|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|keystore.keypass.*|keystore.keypass = $MIRTH_KEYSTORE_KEYPASS|" /opt/mirth-connect/conf/mirth.properties
 sed -i "s|database =.*|database = postgres|" /opt/mirth-connect/conf/mirth.properties

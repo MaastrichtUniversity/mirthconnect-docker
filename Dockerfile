@@ -13,7 +13,7 @@ RUN apt-get update \
     netcat \
     nano \
     cron
-    
+
 # Mirth Connect is run with user 'mirth', uid = 1000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
@@ -33,6 +33,10 @@ RUN \
 WORKDIR /opt/mirth-connect
 
 EXPOSE 80 8443 6661 6671
+
+# Change password of the default openjdk truststore
+ARG ENV_MIRTH_KEYSTORE_STOREPASS
+RUN keytool -storepasswd -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -new ${ENV_MIRTH_KEYSTORE_STOREPASS}
 
 ADD ./configuration.properties /opt/mirth-connect/appdata/configuration.properties
 ADD ./mirth-changepw.txt /opt/mirth-changepw.txt
