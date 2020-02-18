@@ -35,9 +35,9 @@ sed -i "s/RIT_ENV/$RIT_ENV/" /opt/mirth-connect/appdata/configuration.properties
 # Keep server id constant in order to load corresponding message history from existing database
 echo "server.id = $MIRTH_SERVER_ID" > /opt/mirth-connect/appdata/server.id
 
-# Add some relevant CA to the OpenJDK keystore
+# Add some relevant CA to the OpenJDK keystore (pipefail true ignores any errors with importing the cert)
 wget https://www.terena.org/activities/tcs/repository-g3/TERENA_SSL_CA_3.pem -O /tmp/terena_ssl_ca_3.crt
-keytool -import -noprompt -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -file /tmp/terena_ssl_ca_3.crt -alias terenaSslCa3
+keytool -import -noprompt -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -file /tmp/terena_ssl_ca_3.crt -alias terenaSslCa3 || true
 
 # Start MirthConnect service
 ./mcservice start
