@@ -1,6 +1,9 @@
+### Configurations ###
 importcfg "/opt/channels/conf/mirth_server_settings.xml"
 codetemplate library import "/opt/channels/conf/lib_CustomFunctions.xml"
 
+
+### DataHub RDM portal ingest ###
 import "/opt/channels/latest/INGEST_02_XML Metadata Validation.xml"
 channel deploy "INGEST_02_XML Metadata Validation"
 
@@ -13,6 +16,8 @@ channel deploy "SERVICE_PID_createEpicPID"
 import "/opt/channels/latest/SERVICE_PID_IRODS_createPidAndSetAVU.xml"
 channel deploy "SERVICE_PID_IRODS_createPidAndSetAVU"
 
+
+### Notifications and alerting ###
 import "/opt/channels/latest/SERVICE_SLACK_Send_notification.xml"
 # notifications from development environments are unwanted in our (production) Slack!
 # We don't have a slack env for development, so don't deploy the channel.
