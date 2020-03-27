@@ -1,27 +1,29 @@
+### Configurations ###
 importcfg "/opt/channels/conf/mirth_server_settings.xml"
 codetemplate library import "/opt/channels/conf/lib_CustomFunctions.xml"
 
-import "/opt/channels/INGEST_02_XML Metadata Validation.xml"
+
+### DataHub RDM portal ingest ###
+import "/opt/channels/latest/INGEST_02_XML Metadata Validation.xml"
 channel deploy "INGEST_02_XML Metadata Validation"
 
-import "/opt/channels/INGEST_03_PID.xml"
+import "/opt/channels/latest/INGEST_03_PID.xml"
 channel deploy "INGEST_03_PID"
 
-import "/opt/channels/SERVICE_IRODS_Upload via REST.xml"
-channel deploy "SERVICE_IRODS_Upload via REST"
-
-import "/opt/channels/SERVICE_PID_createEpicPID.xml"
+import "/opt/channels/latest/SERVICE_PID_createEpicPID.xml"
 channel deploy "SERVICE_PID_createEpicPID"
 
-import "/opt/channels/SERVICE_PID_IRODS_createPidAndSetAVU.xml"
+import "/opt/channels/latest/SERVICE_PID_IRODS_createPidAndSetAVU.xml"
 channel deploy "SERVICE_PID_IRODS_createPidAndSetAVU"
 
-import "/opt/channels/SERVICE_SLACK_Send_notification.xml"
+
+### Notifications and alerting ###
+import "/opt/channels/latest/SERVICE_SLACK_Send_notification.xml"
 # notifications from development environments are unwanted in our (production) Slack!
 # We don't have a slack env for development, so don't deploy the channel.
 #channel deploy "SERVICE_SLACK_Send_notification.xml"
 
-import "/opt/channels/SERVICE_LOGSTASH_send_alert.xml"
+import "/opt/channels/latest/SERVICE_LOGSTASH_send_alert.xml"
 channel deploy "SERVICE_LOGSTASH_send_alert"
 
 importalert "/opt/alerts/Elastic.xml"
