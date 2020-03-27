@@ -7,9 +7,6 @@ channel deploy "INGEST_02_XML Metadata Validation"
 import "/opt/channels/latest/INGEST_03_PID.xml"
 channel deploy "INGEST_03_PID"
 
-import "/opt/channels/latest/SERVICE_IRODS_Upload via REST.xml"
-channel deploy "SERVICE_IRODS_Upload via REST"
-
 import "/opt/channels/latest/SERVICE_PID_createEpicPID.xml"
 channel deploy "SERVICE_PID_createEpicPID"
 
