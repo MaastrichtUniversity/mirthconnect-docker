@@ -47,6 +47,7 @@ RUN wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${ENV_FI
  && dpkg -i /tmp/filebeat.deb
 
 ADD filebeat.yml /etc/filebeat/filebeat.yml
+RUN chmod go-w /etc/filebeat/filebeat.yml
 
 
 
