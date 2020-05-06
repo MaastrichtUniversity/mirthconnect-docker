@@ -4,8 +4,12 @@ filebeat.inputs:
     paths:
       - /opt/mirth-connect/logs/mirth.log
 
+    tags: ["MIRTH"]
+
+# Disable filebeat monitoring
+logging.metrics.enabled: false
+
 output.logstash:
   hosts: ["elk.dh.local:5044"]
 
 
-tags: ["MIRTH"]
