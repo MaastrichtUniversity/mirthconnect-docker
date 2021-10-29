@@ -1,5 +1,5 @@
 # Adapted from https://github.com/brandonstevens/mirth-connect-docker
-FROM openjdk:8u242-jdk-stretch
+FROM openjdk:8u312-jdk-buster
 
 ARG ENV_MIRTH_CONNECT_VERSION
 ARG ENV_FILEBEAT_VERSION
