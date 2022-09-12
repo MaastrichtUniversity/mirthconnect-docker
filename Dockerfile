@@ -1,10 +1,13 @@
 # Adapted from https://github.com/brandonstevens/mirth-connect-docker
-FROM openjdk:8u242-jdk-stretch
+FROM openjdk:8u312-jdk-buster
 
-ARG ENV_MIRTH_CONNECT_VERSION
+# Install Filebeat
 ARG ENV_FILEBEAT_VERSION
+RUN wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${ENV_FILEBEAT_VERSION}-amd64.deb -O /tmp/filebeat.deb \
+ && dpkg -i /tmp/filebeat.deb
 
-ENV MIRTH_CONNECT_VERSION ${ENV_MIRTH_CONNECT_VERSION}
+ADD filebeat.yml /etc/filebeat/filebeat.yml
+RUN chmod go-w /etc/filebeat/filebeat.yml
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -21,11 +24,12 @@ RUN useradd -u 1000 mirth
 
 RUN mkdir /opt/mirth-connect
 
+ARG ENV_MIRTH_CONNECT_VERSION
 RUN \
   cd /tmp && \
-  wget http://downloads.mirthcorp.com/connect/$MIRTH_CONNECT_VERSION/mirthconnect-$MIRTH_CONNECT_VERSION-unix.tar.gz && \
-  tar xvzf mirthconnect-$MIRTH_CONNECT_VERSION-unix.tar.gz && \
-  rm -f mirthconnect-$MIRTH_CONNECT_VERSION-unix.tar.gz && \
+  wget http://downloads.mirthcorp.com/connect/$ENV_MIRTH_CONNECT_VERSION/mirthconnect-$ENV_MIRTH_CONNECT_VERSION-unix.tar.gz && \
+  tar xvzf mirthconnect-$ENV_MIRTH_CONNECT_VERSION-unix.tar.gz && \
+  rm -f mirthconnect-$ENV_MIRTH_CONNECT_VERSION-unix.tar.gz && \
   mv Mirth\ Connect/*  /opt/mirth-connect/ && \
   mv Mirth\ Connect/.install4j /opt/mirth-connect/ && \
   chown -R mirth /opt/mirth-connect
@@ -41,14 +45,5 @@ ADD ./cron/crontab.txt /opt/crontab.txt
 ADD ./cron/export-all-channels.sh /opt/export-all-channels.sh
 ADD ./cron/mirth-script_export-channels.txt /opt/mirth-script_export-channels.txt
 ADD ./docker-entrypoint.sh /docker-entrypoint.sh
-
-# Install Filebeat
-RUN wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${ENV_FILEBEAT_VERSION}-amd64.deb -O /tmp/filebeat.deb \
- && dpkg -i /tmp/filebeat.deb
-
-ADD filebeat.yml /etc/filebeat/filebeat.yml
-RUN chmod go-w /etc/filebeat/filebeat.yml
-
-
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
